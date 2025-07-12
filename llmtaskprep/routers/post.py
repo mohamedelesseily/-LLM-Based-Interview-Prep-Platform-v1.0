@@ -7,7 +7,7 @@ import google.generativeai as genai
 from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
 
-from socialmediaapi.models.post import (
+from llmtaskprep.models.post import (
     QuestionRequest,
     QuestionSet,
     UserPost,
