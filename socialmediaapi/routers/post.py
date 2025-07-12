@@ -1,8 +1,10 @@
+import os
 import uuid
 from collections import Counter
 from typing import List
 
 import google.generativeai as genai
+from dotenv import load_dotenv
 from fastapi import APIRouter, HTTPException
 
 from socialmediaapi.models.post import (
@@ -15,6 +17,8 @@ from socialmediaapi.models.post import (
 # Base model in Pydantic is a class that allows us to define a model and a model is used to validate data
 
 router = APIRouter()
+load_dotenv()  # Load environment variables from .env file
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 # Gemini API
 # $env:GEMINI_API_KEY = "AIzaSyAEqoOj3214AabRW4ikHv2Ye6LYzphBhWk"
