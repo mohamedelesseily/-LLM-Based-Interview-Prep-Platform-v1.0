@@ -1,9 +1,11 @@
 # llmtaskprep/database.py
+# database.py: SQLAlchemy engine & session setup
+
 import os
 
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 
 # Load connection string from .env or default
 DATABASE_URL = os.getenv(
@@ -14,3 +16,11 @@ engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base = declarative_base()
+
+
+def get_db():
+    db: Session = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

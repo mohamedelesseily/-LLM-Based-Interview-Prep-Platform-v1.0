@@ -1,6 +1,7 @@
-# llmtaskprep/init_db.py
-from database import Base, engine
+from llmtaskprep.database import Base, engine
+from llmtaskprep.models import db_models  # noqa: F401
+from llmtaskprep.models.post import UserPost  # noqa: F401
 
-
-def init_db():
-    Base.metadata.create_all(bind=engine)
+print("Creating database tables...")
+Base.metadata.create_all(bind=engine)
+print("Done.")
