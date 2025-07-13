@@ -161,14 +161,6 @@ def get_all_questions_grouped_by_role(db: Session = Depends(get_db)):
     ]
 
 
-# @router.get("/api/questions", response_model=list[QuestionItem])
-# def get_all_questions(db: Session = Depends(get_db)):
-#     questions = db.query(Question).all()
-#     return [
-#         QuestionItem(type=q.question_type, question=q.question_text) for q in questions
-#     ]
-
-
 """
 Purpose: 
 Manually add a new question set (without using the AI).
