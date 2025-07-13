@@ -1,0 +1,239 @@
+type: collection.insomnia.rest/5.0
+name: My first collection
+meta:
+  id: wrk_b881414bc3174efca3a290b1617e6af3
+  created: 1752281643754
+  modified: 1752281643754
+  description: ""
+collection:
+  - url: http://127.0.0.1:8000
+    name: Get Hello World
+    meta:
+      id: req_84c5ab91259a4546b4ffaf0f3f6bc0b0
+      created: 1752281643821
+      modified: 1752284749451
+      isPrivate: false
+      description: ""
+      sortKey: -1752281643821
+    method: GET
+    parameters:
+      - id: pair_cda362a9c2ed4d5faea11411f598fad7
+        name: ""
+        value: ""
+        description: ""
+        disabled: false
+      - id: pair_6733bccb309f4b6e8051e672c4dec737
+        name: ""
+        value: ""
+        description: ""
+        disabled: false
+    headers:
+      - name: User-Agent
+        value: insomnia/11.3.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://127.0.0.1:8000/
+    name: New Request
+    meta:
+      id: req_b16da086110648f4aa41296a49bfd158
+      created: 1752282218084
+      modified: 1752284664526
+      isPrivate: false
+      description: ""
+      sortKey: -1752282218084
+    method: POST
+    body:
+      mimeType: application/json
+      text: |-
+        {
+        	"body": "This is my first post"
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.3.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://127.0.0.1:8000/post
+    name: Get all posts
+    meta:
+      id: req_9ec1a25771474e41b08e55a6f306a26c
+      created: 1752282471143
+      modified: 1752284741476
+      isPrivate: false
+      description: ""
+      sortKey: -1752282471143
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.3.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://127.0.0.1:8000/api/questions/generate
+    name: generate role questions
+    meta:
+      id: req_2959802224e142a78615716021698d77
+      created: 1752284753241
+      modified: 1752316281275
+      isPrivate: false
+      description: ""
+      sortKey: -1752284753241
+    method: POST
+    body:
+      mimeType: application/json
+      text: |
+        {
+          "job_title": "back end Engineer",
+          "num_questions": 4
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.3.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://127.0.0.1:8000/api/questions
+    name: get role questions
+    meta:
+      id: req_00d2510144de4f4082a089599cc974dd
+      created: 1752291340029
+      modified: 1752291366512
+      isPrivate: false
+      description: ""
+      sortKey: -1752291340029
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.3.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://127.0.0.1:8000/api/questions/0834c351-a169-4437-af36-6f506a188ea5
+    name: Delete
+    meta:
+      id: req_5c4be4ec8f5e445d93907db616c28212
+      created: 1752293116251
+      modified: 1752318761550
+      isPrivate: false
+      description: ""
+      sortKey: -1752293116251
+    method: DELETE
+    headers:
+      - name: User-Agent
+        value: insomnia/11.3.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://127.0.0.1:8000/api/stats
+    name: get Status
+    meta:
+      id: req_b63a5a7fd351439c9caa55f49a6457c9
+      created: 1752293777316
+      modified: 1752295596214
+      isPrivate: false
+      description: ""
+      sortKey: -1752293777316
+    method: GET
+    headers:
+      - name: User-Agent
+        value: insomnia/11.3.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+  - url: http://127.0.0.1:8000/api/questions
+    name: inject new role questions
+    meta:
+      id: req_3cf194ec9ca34d84afc0ea5e608ff709
+      created: 1752294068527
+      modified: 1752316347420
+      isPrivate: false
+      description: ""
+      sortKey: -1752283612192
+    method: POST
+    body:
+      mimeType: application/json
+      text: >
+        {
+          "job_title": "DevOps Engineer",
+          "questions": [
+            {
+              "type": "technical",
+              "question": "Explain the concept of Infrastructure as Code."
+            },
+            {
+              "type": "behavioral",
+              "question": "Describe a time when a deployment went wrong and how you handled it."
+            },
+        		{
+              "type": "behavioral",
+              "question": "Describe 7amo kano"
+            }
+          ]
+        }
+    headers:
+      - name: Content-Type
+        value: application/json
+      - name: User-Agent
+        value: insomnia/11.3.0
+    settings:
+      renderRequestBody: true
+      encodeUrl: true
+      followRedirects: global
+      cookies:
+        send: true
+        store: true
+      rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_dbed983db09475d386107a3bbcb12756a8476aac
+    created: 1752281643758
+    modified: 1752281643758
+environments:
+  name: Base Environment
+  meta:
+    id: env_dbed983db09475d386107a3bbcb12756a8476aac
+    created: 1752281643756
+    modified: 1752281643756
+    isPrivate: false
