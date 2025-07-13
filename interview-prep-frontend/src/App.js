@@ -9,6 +9,12 @@ function App() {
   const [deleteMessage, setDeleteMessage] = useState('');
   const [showJson, setShowJson] = useState(false);
   const [stats, setStats] = useState(null);
+  // const [technicalQ, setTechnicalQ] = useState('');
+  // const [behavioralQ, setBehavioralQ] = useState('');
+  const [injectJobTitle, setInjectJobTitle] = useState('');
+  const [techQuestion, setTechQuestion] = useState('');
+  const [behavQuestion, setBehavQuestion] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
 
 const handleGenerate = async () => {
@@ -16,7 +22,7 @@ const handleGenerate = async () => {
     alert("Please enter a job title before generating questions.");
     return;
   }
-
+  setIsLoading(true);  // start loading
   try {
     const response = await fetch('http://localhost:8000/api/questions/generate', {
       method: 'POST',
@@ -28,6 +34,8 @@ const handleGenerate = async () => {
     setGeneratedQuestions(data.questions);
   } catch (error) {
     console.error('Error generating questions:', error);
+  } finally {
+    setIsLoading(false); // stop loading
   }
 };
 
@@ -92,11 +100,50 @@ const handleFetchStats = async () => {
   }
 };
 
+const handleInjectOneEach = async () => {
+  if (!injectJobTitle.trim() || !techQuestion.trim() || !behavQuestion.trim()) {
+    alert("Please fill all fields.");
+    return;
+  }
+
+  const payload = {
+    job_title: injectJobTitle,
+    questions: [
+      { type: 'technical', question: techQuestion },
+      { type: 'behavioral', question: behavQuestion },
+    ],
+  };
+
+  try {
+    const response = await fetch('http://localhost:8000/api/questions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const error = await response.text();
+      throw new Error(error);
+    }
+
+    alert("✅ Questions injected successfully!");
+    setInjectJobTitle('');
+    setTechQuestion('');
+    setBehavQuestion('');
+    // handleFetchAll();  // refresh view
+  } catch (err) {
+    alert(`❌ Failed to inject: ${err.message}`);
+  }
+};
+
 
 
 
 return (
   <div style={{ padding: 20, fontFamily: 'Arial' }}>
+    <h1 style={{ textAlign: 'center', marginBottom: '30px' }}>
+  📌LLM-Based Interview Prep Platform v1.0
+</h1>
     <h2>Interview Question Generator</h2>
 
     <input
@@ -115,6 +162,11 @@ return (
       style={{ marginRight: 10, width: 50 }}
     />
     <button onClick={handleGenerate}>Generate</button>
+    {isLoading && (
+  <div style={{ marginTop: 10, color: '#555' }}>
+    ⏳ Generating questions...
+  </div>
+)}
 
     {generatedQuestions.length > 0 && (
       <>
@@ -196,6 +248,37 @@ return (
         </ul>
       </div>
     )}
+
+  <hr />
+
+<h2>Inject One Technical & One Behavioral Question</h2>
+
+<input
+  type="text"
+  value={injectJobTitle}
+  onChange={(e) => setInjectJobTitle(e.target.value)}
+  placeholder="Job Title"
+  style={{ marginBottom: 10, display: 'block', width: 300 }}
+/>
+
+<input
+  type="text"
+  value={techQuestion}
+  onChange={(e) => setTechQuestion(e.target.value)}
+  placeholder="Technical Question"
+  style={{ marginBottom: 10, display: 'block', width: 500 }}
+/>
+
+<input
+  type="text"
+  value={behavQuestion}
+  onChange={(e) => setBehavQuestion(e.target.value)}
+  placeholder="Behavioral Question"
+  style={{ marginBottom: 10, display: 'block', width: 500 }}
+/>
+
+<button onClick={handleInjectOneEach}>Inject Questions</button>
+
   </div>
 );
 
