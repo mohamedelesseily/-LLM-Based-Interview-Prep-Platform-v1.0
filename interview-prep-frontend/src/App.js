@@ -15,6 +15,9 @@ function App() {
   const [techQuestion, setTechQuestion] = useState('');
   const [behavQuestion, setBehavQuestion] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [deleteId, setDeleteId] = useState('');
+  const [deleteByIdMessage, setDeleteByIdMessage] = useState('');
+  const [hasSaved, setHasSaved] = useState(false);
 
 
 const handleGenerate = async () => {
@@ -22,7 +25,8 @@ const handleGenerate = async () => {
     alert("Please enter a job title before generating questions.");
     return;
   }
-  setIsLoading(true);  // start loading
+  setIsLoading(true);
+  setHasSaved(false);  // ✔️ Reset so new questions can be saved
   try {
     const response = await fetch('http://localhost:8000/api/questions/generate', {
       method: 'POST',
@@ -38,6 +42,43 @@ const handleGenerate = async () => {
     setIsLoading(false); // stop loading
   }
 };
+
+const handleSaveGeneratedQuestions = async () => {
+   if (hasSaved) {
+    window.alert("✅ Already saved this set. Please generate new questions to save again.");
+    return;
+  }
+
+  try {
+    const payload = {
+      job_title: jobTitle,
+      questions: generatedQuestions,
+    };
+
+    const response = await fetch('http://localhost:8000/api/questions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      window.alert(`❌ Failed to save: ${errorData.detail}`);
+      return;
+    }
+
+    const data = await response.json();
+    window.alert(`✅ ${data.questions.length} question(s) saved successfully!`);
+ setHasSaved(true); // ✅ Prevent resaving the same generation
+    // Immediately refresh DB view
+    handleFetchAll();
+  } catch (err) {
+    window.alert(`❌ Save failed: ${err.message}`);
+  }
+};
+
+
+
 
 const handleFetchAll = async () => {
   try {
@@ -55,6 +96,32 @@ const handleFetchAll = async () => {
   } catch (err) {
     window.alert(`❌ Failed to fetch questions: ${err.message}`);
     setShowJson(false);
+  }
+};
+
+
+const handleDeleteById = async () => {
+if (!String(deleteId).trim()) {
+    alert("Please enter a question ID to delete.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://127.0.0.1:8000/api/question/${deleteId}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      window.alert(`❌ ${error.detail}`);
+      return;
+    }
+
+    const data = await response.json();
+    window.alert(`✅ ${data.message}`);
+    handleFetchAll();
+  } catch (err) {
+    window.alert(`❌ ${err.message}`);
   }
 };
 
@@ -178,6 +245,10 @@ return (
             </li>
           ))}
         </ul>
+<button onClick={handleSaveGeneratedQuestions} disabled={hasSaved}>
+  {hasSaved ? "✅ Saved" : "💾 Save to Database"}
+</button>
+
       </>
     )}
 
@@ -219,6 +290,24 @@ return (
         {deleteMessage}
       </p>
     )}
+
+    <hr />
+
+<h2>Delete Question by ID</h2>
+
+<input
+  type="number"
+  value={deleteId}
+  onChange={(e) => setDeleteId(Number(e.target.value))}
+  placeholder="Question ID"
+  style={{ marginRight: 10 }}
+/>
+<button onClick={handleDeleteById}>Delete by ID</button>
+{deleteByIdMessage && (
+  <p style={{ color: deleteByIdMessage.startsWith("✅") ? "green" : "red", marginTop: 10 }}>
+    {deleteByIdMessage}
+  </p>
+)}
 
     <hr />
 
@@ -279,7 +368,12 @@ return (
 
 <button onClick={handleInjectOneEach}>Inject Questions</button>
 
-  </div>
+
+
+
+
+
+</div>
 );
 
 }

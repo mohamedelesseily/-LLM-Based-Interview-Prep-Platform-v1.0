@@ -1,5 +1,4 @@
 import os
-from collections import defaultdict
 from typing import List
 
 import google.generativeai as genai
@@ -129,12 +128,32 @@ def generate_questions(request: QuestionRequest, db: Session = Depends(get_db)):
             db.add(question_db)
             saved_questions.append(QuestionItem(type=q["type"], question=q["question"]))
 
-        db.commit()
+        # db.commit()
 
         return QuestionSet(job_title=request.job_title, questions=saved_questions)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/api/questions", response_model=QuestionSet)
+async def save_question_set(data: QuestionSet, db: Session = Depends(get_db)):
+    saved_questions = []
+
+    for q in data.questions:
+        question = Question(
+            job_title=data.job_title, question_type=q.type, question_text=q.question
+        )
+        db.add(question)
+        saved_questions.append(question)
+
+    db.commit()  # ← ✅ Keep this here!
+
+    return QuestionSet(
+        id=None,
+        job_title=data.job_title,
+        questions=data.questions,
+    )
 
 
 """
@@ -145,19 +164,27 @@ Returns all entries from your in-memory list (question_store).
 """
 
 
-@router.get("/api/questions", response_model=list[QuestionSet])
-def get_all_questions_grouped_by_role(db: Session = Depends(get_db)):
-    db_questions = db.query(Question).all()
+@router.get("/api/questions")
+def get_all_questions(db: Session = Depends(get_db)):
+    job_title_map = {}
 
-    grouped = defaultdict(list)
-    for q in db_questions:
-        grouped[q.job_title].append(
-            QuestionItem(type=q.question_type, question=q.question_text)
+    all_questions = db.query(Question).order_by(Question.job_title, Question.id).all()
+
+    for q in all_questions:
+        if q.job_title not in job_title_map:
+            job_title_map[q.job_title] = []
+
+        job_title_map[q.job_title].append(
+            {
+                "id": q.id,
+                "type": q.question_type,
+                "question": q.question_text,
+            }
         )
 
     return [
-        QuestionSet(job_title=job, questions=questions)
-        for job, questions in grouped.items()
+        {"job_title": title, "questions": questions}
+        for title, questions in job_title_map.items()
     ]
 
 
@@ -189,13 +216,6 @@ async def save_question_set(data: QuestionSet, db: Session = Depends(get_db)):
         job_title=data.job_title,
         questions=data.questions,
     )
-
-
-# @router.post("/api/questions", response_model=QuestionSet)
-# async def save_question_set(data: QuestionSet):
-#     data.id = str(uuid.uuid4())  # Generate unique string ID
-#     question_store.append(data.dict())
-#     return data
 
 
 """
