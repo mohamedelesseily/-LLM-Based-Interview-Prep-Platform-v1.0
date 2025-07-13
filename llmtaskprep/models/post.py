@@ -27,17 +27,3 @@ class QuestionSet(BaseModel):
     id: Optional[str] = None
     job_title: str
     questions: List[QuestionItem]
-
-
-class QuestionItemDB(BaseModel):
-    id: int
-    job_title: str
-    question_type: str
-    question_text: str
-
-    class Config:
-        orm_mode = True  # Required to work with SQLAlchemy models
-
-
-class QuestionSetDB(BaseModel):
-    questions: list[QuestionItemDB]

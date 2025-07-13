@@ -1,4 +1,5 @@
 import os
+from collections import defaultdict
 from typing import List
 
 import google.generativeai as genai
@@ -117,7 +118,8 @@ def generate_questions(request: QuestionRequest, db: Session = Depends(get_db)):
         json_block = re.search(r"\{.*\}", response.text, re.DOTALL)
         questions_data = json.loads(json_block.group())["questions"]
 
-        # Save each question to DB
+        saved_questions = []
+
         for q in questions_data:
             question_db = Question(
                 job_title=request.job_title,
@@ -125,17 +127,11 @@ def generate_questions(request: QuestionRequest, db: Session = Depends(get_db)):
                 question_text=q["question"],
             )
             db.add(question_db)
+            saved_questions.append(QuestionItem(type=q["type"], question=q["question"]))
 
         db.commit()
 
-        # Convert back to response model
-        return QuestionSet(
-            job_title=request.job_title,
-            questions=[
-                QuestionItem(type=q["type"], question=q["question"])
-                for q in questions_data
-            ],
-        )
+        return QuestionSet(job_title=request.job_title, questions=saved_questions)
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -149,12 +145,28 @@ Returns all entries from your in-memory list (question_store).
 """
 
 
-@router.get("/api/questions", response_model=list[QuestionItem])
-def get_all_questions(db: Session = Depends(get_db)):
-    questions = db.query(Question).all()
+@router.get("/api/questions", response_model=list[QuestionSet])
+def get_all_questions_grouped_by_role(db: Session = Depends(get_db)):
+    db_questions = db.query(Question).all()
+
+    grouped = defaultdict(list)
+    for q in db_questions:
+        grouped[q.job_title].append(
+            QuestionItem(type=q.question_type, question=q.question_text)
+        )
+
     return [
-        QuestionItem(type=q.question_type, question=q.question_text) for q in questions
+        QuestionSet(job_title=job, questions=questions)
+        for job, questions in grouped.items()
     ]
+
+
+# @router.get("/api/questions", response_model=list[QuestionItem])
+# def get_all_questions(db: Session = Depends(get_db)):
+#     questions = db.query(Question).all()
+#     return [
+#         QuestionItem(type=q.question_type, question=q.question_text) for q in questions
+#     ]
 
 
 """
