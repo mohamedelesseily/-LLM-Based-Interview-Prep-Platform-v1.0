@@ -1,0 +1,38 @@
+version: '3.8'
+services:
+  frontend:
+    build: ./interview-prep-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    
+  backend:
+    build: ./llmtaskprep
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://postgres:dbpw@db:5432/interview_questions
+      - GEMINI_API_KEY=AIzaSyAEqoOj3214AabRW4ikHv2Ye6LYzphBhWk
+
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=interview_questions
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=dbpw
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
