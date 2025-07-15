@@ -26,7 +26,7 @@ load_dotenv()  # Load environment variables from .env file
 genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 # Gemini API
-# $env:GEMINI_API_KEY = "AIzaSyAEqoOj3214AabRW4ikHv2Ye6LYzphBhWk"
+# $env:GEMINI_API_KEY = insert_your_gemini_api_key_here
 
 
 @router.get("/")
