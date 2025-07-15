@@ -101,7 +101,7 @@ curl -X POST http://localhost:8000/api/questions/generate \
 
 - **Backend:**
   - FastAPI app (see `backend/llmtaskprep/`)
-  - Handles all API routes, DB (SQLite or Postgres), and Gemini integration
+  - Handles all API routes, DB (Postgres), and Gemini integration
 
 ---
 
