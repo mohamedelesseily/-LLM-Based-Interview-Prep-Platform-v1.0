@@ -16,7 +16,7 @@ services:
         condition: service_healthy
     environment:
       - DATABASE_URL=postgresql://postgres:dbpw@db:5432/interview_questions
-      - GEMINI_API_KEY=AIzaSyAEqoOj3214AabRW4ikHv2Ye6LYzphBhWk
+      - GEMINI_API_KEY=insert_your_gemini_api_key_here
 
   db:
     image: postgres:13
