@@ -2,7 +2,7 @@
 # LLM-Based Interview Prep Platform
 
 A full-stack application for generating, rating, and managing interview questions using Google Gemini (Generative AI).
-Built with **FastAPI** (backend), **React** (frontend), and **Docker** for easy deployment.
+Built with **FastAPI** (backend), **React** (frontend), **PostgreSQL** (Database) and **Docker** for easy deployment.
 
 ---
 
